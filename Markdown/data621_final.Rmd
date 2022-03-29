@@ -10,23 +10,22 @@ output:
     toc_depth: 2.0
     toc: true
   html_document: default
-
 abstract: |
- \noindent \textbf{Background:} Noise, as the term itself suggests, is most often seen a nuisance to ecological insight, a inconvenient reality that must be acknowledged, a haystack that must be stripped away to reveal the processes of interest underneath. Yet despite this well-earned reputation, noise is often interesting in its own right: noise can induce novel phenomena that could not be understood from some underlying determinstic model alone.\break
  
+ 
+ 
+ 
+ 
+ 
+ 
+ \noindent \textbf{Background:} Noise, as the term itself suggests, is most often seen a nuisance to ecological insight, a inconvenient reality that must be acknowledged, a haystack that must be stripped away to reveal the processes of interest underneath. Yet despite this well-earned reputation, noise is often interesting in its own right: noise can induce novel phenomena that could not be understood from some underlying determinstic model alone.\break
  \noindent \textbf{Methods:} Nor is all noise the same, and close examination of differences in frequency, color or magnitude can reveal insights that would otherwise be inaccessible.\break
  \noindent \textbf{Results:} Yet with each aspect of stochasticity leading to some new or unexpected behavior, the time is right to move beyond the familiar refrain of "everything is important" (Bjørnstad & Grenfell 2001).  Stochastic phenomena can suggest new ways of inferring process from pattern, and thus spark more dialog between theory and empirical perspectives that best advances the field as a whole.\break
- 
  \noindent \textbf{Conclusion:} I highlight a few compelling examples, while observing that the study of stochastic phenomena are only beginning to make this translation into empirical inference.  There are rich opportunities at this interface in the years ahead.\break
- 
  \noindent Abstract word count: 350
- 
  \noindent Manuscript word count: 1500
- 
  \noindent Figures: 7 figures 
- 
  \noindent Tables: 7 tables
- 
  \noindent References: \newpage
 fontsize: 11pt
 # lof: true
@@ -57,17 +56,21 @@ is just that -- something which obscures patterns we are trying to infer (Knape 
 
 # Methods
 
-In arguing for this shift, it essential to recognize this is a call for a bigger tent, not for the rejection of previous paradigms.  What I will characterize as 'noise the nuisance' reflects a predominately statistical approach, in which noise, almost by definition, represents all the processes we are not interested in that create additional variation which might obscure the pattern of interest.  By contrast, an extensive literature has long explored how noise itself can create patterns and explain processes from population cycling to coexistence.  These broad categories should be seen as a spectrum and not be mistaken for either a sharp dichotomy nor a reference to a strictly empirical-theoretical divide.  Each paradigm expands upon rather than rejects the previous notion of noise: the recognition that noise can create novel phenomena does not mean that noise cannot also obscure the signal of some process of interest.  Likewise, seeking to use noise as a novel source of information about underlying processes will be informed by both previous paradigms, as our discussion will illustrate.
-
 ## Study Design
 
-Case-control study
+In arguing for this shift, it essential to recognize this is a call for a bigger tent, not for the rejection of previous paradigms.  What I will characterize as 'noise the nuisance' reflects a predominately statistical approach, in which noise, almost by definition, represents all the processes we are not interested in that create additional variation which might obscure the pattern of interest.  By contrast, an extensive literature has long explored how noise itself can create patterns and explain processes from population cycling to coexistence.  These broad categories should be seen as a spectrum and not be mistaken for either a sharp dichotomy nor a reference to a strictly empirical-theoretical divide.  Each paradigm expands upon rather than rejects the previous notion of noise: the recognition that noise can create novel phenomena does not mean that noise cannot also obscure the signal of some process of interest.  Likewise, seeking to use noise as a novel source of information about underlying processes will be informed by both previous paradigms, as our discussion will illustrate.
+
 
 ## Study population
 
-The code and data for the simulations in this paper are maintained at <https://github.com/cboettig/noise-phenomena>.
+The dataset contains 9 demographic, clinical and derived anatomic values for 150 patients. Originally, the dataset was from a longitudinal study however, we plan to use it for this for a logistic regression. To satisfy the independence assumption, we will only use information from the first visit in our analysis. Covariates include sex (M/F), age (60 - 96), years of education (6 - 23), social economic status (SES; ranked 1-5), mini-mental stat examination (MMSE), clinical dementia rating (CDR), estimated total intracranial volume (eTIV), atlas scaling factor (ASF), and normalized whole brain volume (nWBV). Each unique patient was grouped into one of three categories, Nondemented, Demented, and Converted. Subjects that did not have a SES value recorded (8) were excluded from this study. Outliers were identified by checking the distribution. Figure(#) shows the details of our screening and inclusion process. 
+
+
 
 ## Study Outcomes
+
+### Primary Outcome
+
 To emphasize the underlying trend in the changing roles in which we
 see and understand noisy processes, I will also restrict my focus
 to relatively simple models primarily from population ecology context.
@@ -76,119 +79,195 @@ tractable but also allows us to focus on aspects that are germane to many
 contexts rather than unique to particular complexities (Bartlett 1960; Levins
 41 1966).
 
-## Data Collection and data source
+### Secondary Outcome
 
-Nevertheless, that complexity matters -- few themes have been better
-emphasized in the theoretical literature (Bjørnstad & Grenfell 2001).  Both
-the foundational literature and recent research continue to echo the
-theme of understanding the impact different real world complexities
-have in stochastic dynamics.  As such, we will
-rely on both textbooks and recent reviews to provide a proper treatment
-of these issues, and focus on broader trends.
+## Data collection and data source
 
-```{r}
-dementia <- read.csv("D:/UofC2022/Data621/Project/Data/oasis_cross-sectional.csv")
+The dataset we will be working with is from the Open Access Series of Imaging Studies (OASIS), which is a compilation of open-source distributing MRI datasets. OASIS is made available by the Washington University Alzheimer’s Disease Research Center. This dataset is licensed under the CCO 1.0 Universal (CCO 1.0) Public Domain Dedication and is open source where no research ethics approval is required. For the purposes of this project, we are assuming that the measurements all the measurements were taken at the end of the study.
 
-dementia <- dementia %>% dplyr::select(-c(Hand,Delay))
+The dataset can be obtained in a csv format that was read into R and analyzed using built-in packages in the R library. Columns for 'Hand','MRI.ID', 'Visit','Subject_ID' and, 'MR.Delay' were excluded from our study. All the patients were right hand and we are only considering the first visit for all the patients so 'Visit' and 'MR.Delay' are not needed. 'MRI.ID' and 'Subject_ID' are not informative so we excluded that column from our analysis. 
+
+Using the _vis miss_ function from the visdat package in R, we created a heatmap to determine the percentage of missing data in each column. There are 8 missing values in the SES variable. Since SES cannot be determined on other values, we will remove the 8 individuals leaving us with 142 left for analysis. 
+
+There are 14 patients in our dataset who under the _Converted_ group however we want to make our group variable a binary variable. We moved 14 patients in the _Converted_ group into the _Demented_. Finally we will convert the categorical columns of 'Group', 'sex' and 'SES' into factors, with 'Group' having two levels (Nondemented, Demented), 'sex' having 2 levels ('F','M') and SES with 5 levels (1 = Highest SES and 5 being the lowest SES).
 
 
+
+```{r message = FALSE, warning = FALSE}
+# Data wrangling
+dementia <- read.csv("D:/UofC2022/Data621/Project/data621_final/Data/oasis_longitudinal.csv")
+
+# selecting only first visit
+dementia <- dementia[dementia$Visit == 1,]
+
+# removing columns 
+dementia <- dementia %>% 
+  dplyr::select(-c(Hand,MRI.ID,Subject.ID,Visit,MR.Delay))
+
+
+# Checking for missing data
 vis_miss(dementia)
-gg_miss_upset(dementia, 
-              nsets = 10,
-              nintersects = 50)
 
-dementia_sub <- dementia %>% drop_na() # 216
+dementia_sub <- dementia %>% drop_na()
+
+# moving converted
+dementia_sub['Group'][dementia_sub['Group']=="Converted"] <- "Demented"
+
+# rename columns
+dementia_sub <- dementia_sub %>%
+  rename(SEX = M.F)
+
+# creating factors
+dementia_sub$SES <- factor(dementia_sub$SES)
+dementia_sub$Group <- factor(dementia_sub$Group,levels=c("Nondemented",'Demented'))
+dementia_sub$SEX <- factor(dementia_sub$SEX,levels=c("F",'M'))
 
 
-dementia_sum <- dementia_sub[3:10]
-dementia_summary<-as.data.frame(apply(dementia_sum,2,summary))
-dementia_summary
+head(dementia_sub)
 ```
 
-```{r,fig.width=5,fig.height=5}
-def_par <- fp_par(text.align = "center", padding = 5)
-def_text <- fp_text(font.size = 11, font.family = "Arial")
-
-
-ft <- flextable(data= dementia_summary)
-ft <- add_header(ft,
-                 Age= "Continuous",
-                 Educ= "Categorical",
-                 SES= "Categorical",
-                 MMSE= "Continuous",
-                 CDR= "Categorical",
-                 eTIV= "Continuous",
-                 nWBV= "Continuous",
-                 ASF= "Continuous",top = FALSE)
-
-ft <- add_header_row(
-    x=ft,
-    values = c('Demongraphic','Clinical','Derrived Anatomic Values'),
-    colwidths = c(3,2,3))
-
-ft <- footnote( ft, i = 1, j = 1:2,
-                value = as_paragraph(
-                  c("This is footnote one",
-                    "This is footnote two")
-                ),
-                ref_symbols = c("a", "b"),
-                part = "header",inline=T)
-ft <- footnote( ft, i = 1, j = 3:4,
-                value = as_paragraph(
-                  c("This is footnote three",
-                    "This is footnote four")
-                ),
-                ref_symbols = c( "c","d"),
-                part = "header",inline=T)
-
-ft <- style(x = ft, pr_p = def_par, pr_t = def_text, part = "all") 
-ft <- autofit(ft)
-ft <- width(ft, width = .75)
-ft <- theme_zebra(ft)
-
-
-
-ft <-set_table_properties(ft, layout = "autofit")
-border <- fp_border()
-vline(ft, j = c('SES', 'CDR'), border = border, part = "all")
-```
-
-```{r}
-dementia_full <- ggplot(dementia, aes(x=Age))
-dementia_full <- dementia_full + geom_histogram(binwidth=5, colour="black", 
-                          aes(y=..density.., fill=..count..))
-dementia_full <- dementia_full + scale_fill_gradient("Count")
-dementia_full <- dementia_full + stat_function(fun=dnorm,color="red",
-                                                 args=list(mean=mean(dementia$Age),
-                                                           sd=sd(dementia$Age)))
-dementia_filter <- ggplot(dementia_sub, aes(x=Age))
-dementia_filter <- dementia_filter + geom_histogram(binwidth=5, colour="black", 
-                          aes(y=..density.., fill=..count..))
-dementia_filter <- dementia_filter + scale_fill_gradient("Count")
-dementia_filter <- dementia_filter + stat_function(fun=dnorm,color="red",
-                                                 args=list(mean=mean(dementia_sub$Age),
-                                                           sd=sd(dementia_sub$Age)))
-
-par(mfrow=c(1,2))
-
-dementia_full<-dementia_full + labs(x = "Age",
-                  y = "Density",
-                  title = "Distribution of Patient's Age (Full)")   
-dementia_filter<-dementia_filter + labs(x = "Age",
-                  y = "Density",
-                  title = "Distribution of Patient's Age (Filter)")   
-
-grid.arrange(dementia_full, dementia_filter, ncol=2)
-```
 
 
 
 ## Statistical Methods
 
-This review is structured into three sections: Origins of noise, emergent
-phenomena, and noise-driven inference.  The first section lays the conceptual groundwork we will need, while also highlighting a shift to more and more mechanistically rooted descriptions of noise.  We will see where the common formulation of "deterministic skeleton plus noise term" comes from, how it  is best justified, and when it breaks down.  The second section introduces noise the creator, showing examples of ecological phenomena generated by stochasticity.  These examples will be familiar to most specialists but illustrate a different way of thinking than held by most ecologists, where noise is only a nuisance to be filtered or averaged out.  The third and final section, noise the informer, turns these examples back-to-front, asking what noise can tell us about a system: such as its underlying resilience or stability, or the approach of a catastrophic shift. Examples are fewer here, and have largely yet to benefit from the introduction of either the rigorous theorems or more complex models so plentiful in the previous sections.  Yet the promise of prediction, of early warning signs before tipping points, have spurred broad interest in such noise-based inference. This review is a call to both deepen the connection to mechanism and better formalize this thinking, but also look more broadly into other ways in which noisy phenomena can help inform and predict underlying processes.
+### Primary Outcome
+
+We will be using logistic regression to answer our research question to determine the impact SES and education have on dementia. The reason we are using logistics regression for our analysis is due to our primary outcome, dementia, will be examined as a binary outcome of no dementia and dementia. 
+
+### Secondary Outcome
+
+We will examine any potential effect modifier 
+
+### Tertiary Outcome
+
+Ordinary logisitic regression with CDR of 0 0.5 and 1.0
+
+### Software for Analysis
+
+RStudio (Version 1.4.1717) was used to perform the data cleaning and statistical analysis on the relationship between dementia and age, considering potential confounding and effect modifiers. 
 
 # Results
+
+## Descriptive Statistics
+
+The descriptive statistics for the potential predictors of dementia (n = 70) and nondemented (n = 72) for individuals between the ages of 60 - 96 years old can be found in the figure (#) using the _gtsummary_ package in R. The p-values reported in the figure are calculated for the Person's Chi-Squared test for categorical variables with expected cell counts $\geq 5$, Wilcoxon rank sum test for numerical variables and, a Fisher's exact test for categorical variables with an expected cell count $<5$. We used a significance level of $alpha=0.05$ to compare our findings. 
+
+### Demographic variables
+
+There were significantly more female participants in the nondementia group (69%) than the dementia group (49%, p-value = 0.011). The mean age of people who did not have dementia was 75 years old (sd = 8) which is exactly the same as those in the  dementia group (75 years old, sd =7; p-value = >0.9). The mean years of education were also the same in both the nondemented (15 years, sd = 3) and demented groups (14 years, sd = 3; p-value = 0.029).
+
+We see high a higher proportion of participants with higher SES levels in the no dementia group (SES1 = 21%, SES2 = 38%) than in the dementia group (SES1 = 26%, SES2 = 21%, p-value = 0.3). While more participants in the dementia group were found to be in the lower SES levels (SES4 = 24%, SES5 = 2.9%) compared to those in the no dementia group (SES4 = 18%, SES5 = 1.4%; p-value = 0.3). 
+
+### Derived Anatomic Values
+
+The Estimated total intracranial volume (eTIV), Atlas scaling factor (ASF) and, Normalized whole brain volume (nWBV) mean values for both the non dementia group (eTIV = 1,480, sd = 184; p-value = 0.8, nWBV = 0.75, sd = 0.04; p-value = 0.002, ASF = 1.20, sd = 0.14; p-value = 0.8) and the dementia group (eTIV = 1,471, sd = 167; p-value = 0.8, nWBV = 0.73, sd = 0.03; p-value = 0.002, ASF = 1.21, sd = 0.13; p-value = 0.8).
+
+```{r warning=FALSE} 
+library(gtsummary)
+dementia_descript <- subset(dementia_sub, select= -c(CDR))
+dementia_descript %>%
+  tbl_summary(
+    by = Group,
+    # sort = all_categorical()~'frequency',
+    statistic = list(all_continuous() ~ "{mean} ({sd})",
+                     all_categorical() ~ "{n} ({p}%)"),
+    missing_text = "(Missing)"
+  ) %>%
+  add_p()%>%
+  modify_header(label = "**Variable**") %>% bold_labels()
+```
+
+
+## Primary Outcome Results (Logistic Regression)
+
+### Variable selection
+
+We selected our variables for our final model using a pairwise plot from GGAlly, vif function from the car and the backwards stepwise variable selection from the MASS package. From the pairwise plot, there are a few variables with high correlations which could indicate multicollinearity (eTIV & ASF). 
+
+```{r message = FALSE, warning= FALSE}
+library(GGally)
+# no CDR
+ggpairs(dementia_descript)
+```
+To check, we used the vif function on our full logistic model that incorporates all the predictors we want to examine. We see that ASF and eTIV both have a VIF value that is greater than 5. As a rule of thumb, VIF values that are greater than 5 have high collinearity and need to be addressed. 
+
+We used the Akaike information criterion (AIC) to determine which predictors will be kept in our initial model. The model that provides the lowest AIC value will be the one that provides the best fit model with the least amount of variables to avoid over and under fitting. From the backwards stepwise regression our initial AIC was 142 from the full model but after dropping ASF, we obtain a AIC of 140.27. We can check this by doing a anova test with two models, one with ASF and a reduced one without.
+
+```{r}
+library(MASS)
+
+## Full model 
+dem_fit <- glm(Group~SES + Age + EDUC +SEX +MMSE+ eTIV+nWBV+ASF, data=dementia_sub, family="binomial")
+summary(dem_fit)
+
+## multicollinearity
+
+car::vif(dem_fit)
+
+# stepwise regression
+dem_step <- dem_fit %>%
+  stepAIC(direction='backward',trace = FALSE)
+dem_step
+```
+To determine if we should drop the ASF variable, we can do anova test to determine of the is a difference between the two models at a significance level of $\alpha=0.05$. 
+
+Our null hypothesis is that there is a difference between the two models and we should remove the predictor and the alternative hypothesis is that there is no difference between the two models where we would keep the predictor
+```{r}
+anova(dem_step,dem_fit,test='Chisq')
+```
+We obtain a p-value of 0.966 which means we fail to reject the null hypothesis. This means that there is a difference between the two models and we should use the reduced model for our analysis. 
+
+```{r}
+summary(dem_step)
+
+# odds ratio
+exp(coef(dem_step))
+
+#confint
+exp(dem_step$coefficients)
+
+# 95% CI
+exp(confint(dem_step))
+```
+
+
+
+```{r}
+# Eduction, AGE confounder with SES 
+summary(glm(Group~SES + Age + EDUC +SEX +MMSE+ eTIV+nWBV, data=dementia_sub, family="binomial"))
+summary(glm(Group~SES + Age + SEX +MMSE+ eTIV+nWBV, data=dementia_sub, family="binomial"))
+
+# confouding calculation
+crude =  57.45
+adjusted = 31.08
+abs(crude-adjusted)/abs(crude)
+
+#interaction age:SEX
+summary(glm(Group~SES + Age + EDUC +SEX + MMSE + eTIV + nWBV + EDUC*SEX, data=dementia_sub, 
+            family="binomial"))
+
+educ_sex_dem <- glm(Group~SES + Age + EDUC +SEX + MMSE + eTIV + nWBV + EDUC*SEX, data=dementia_sub,
+                    family="binomial")
+
+
+anova(dem_step,educ_sex_dem,test='Chisq')
+```
+
+
+
+we tested our model using the following logistic regression assumptions:
+
+### Linearity Assumption
+
+### Multicollinearity
+
+### Influential Points and Outliers
+
+## Secondary Outcome Results (Effect modification/Confounding)
+
+## Tertiary Outcome Results (Subgroup Analysis)
+
 
 Demographic stochasticity refers to fluctuations in population sizes
 or densities that arise from the fundamentally discrete nature of
@@ -259,12 +338,14 @@ Tim Coulson and two anonymous reviewers. This work was supported in
 part by  USDA National Institute of Food and Agriculture, Hatch
 project CA-B-INS-0162-H.
 
+
+
+
+
+
+
+
 # References
-
-
-
-![Dag ](D:/UofC2022/Data621/Project/Images/dagitty-model2.png)
-
 
 
 
