@@ -89,8 +89,9 @@ The dataset can be obtained in a csv format that was read into R and analyzed us
 
 Using the _vis miss_ function from the visdat package in R, we created a heatmap to determine the percentage of missing data in each column. There are 8 missing values in the SES variable. Since SES cannot be determined on other values, we will remove the 8 individuals leaving us with 142 left for analysis. 
 
-There are 14 patients in our dataset who under the _Converted_ group however we want to make our group variable a binary variable. We moved 14 patients in the _Converted_ group into the _Demented_. Finally we will convert the categorical columns of 'Group', 'sex' and 'SES' into factors, with 'Group' having two levels (Nondemented, Demented), 'sex' having 2 levels ('F','M') and SES with 5 levels (1 = Highest SES and 5 being the lowest SES).
+There are 14 patients in our dataset who under the _Converted_ group however we want to make our group variable a binary variable. We moved 14 patients in the _Converted_ group into the _Demented_. Finally we will convert the categorical columns of 'Group', 'sex' and 'SES' into factors, with 'Group' having two levels (Nondemented, Demented), 'sex' having 2 levels ('F','M'). 
 
+From our exploratory analysis, we noticed that for the lowest SES level (5) only had 3 patients in total (1-Nondemented, 2-Demented). As a rule of thumb, we need at least 10 observations for each unique level to provide us with reasonable estimates and standard errors. We have chosen to collapse the lowest level of SES (5) to the second lowest (4) which adjust the SES covaraite to have 4 levels with 1 being the highest and 4 being the lowest.
 
 
 ```{r message = FALSE, warning = FALSE}
@@ -117,16 +118,16 @@ dementia_sub['Group'][dementia_sub['Group']=="Converted"] <- "Demented"
 dementia_sub <- dementia_sub %>%
   rename(SEX = M.F)
 
+# collapse levels
+dementia_sub$SES <- replace(dementia_sub$SES, dementia_sub$SES == 5,4)
+
 # creating factors
 dementia_sub$SES <- factor(dementia_sub$SES)
 dementia_sub$Group <- factor(dementia_sub$Group,levels=c("Nondemented",'Demented'))
 dementia_sub$SEX <- factor(dementia_sub$SEX,levels=c("F",'M'))
 
-
 head(dementia_sub)
 ```
-
-
 
 
 ## Statistical Methods
@@ -157,7 +158,7 @@ The descriptive statistics for the potential predictors of dementia (n = 70) and
 
 There were significantly more female participants in the nondementia group (69%) than the dementia group (49%, p-value = 0.011). The mean age of people who did not have dementia was 75 years old (sd = 8) which is exactly the same as those in the  dementia group (75 years old, sd =7; p-value = >0.9). The mean years of education were also the same in both the nondemented (15 years, sd = 3) and demented groups (14 years, sd = 3; p-value = 0.029).
 
-We see high a higher proportion of participants with higher SES levels in the no dementia group (SES1 = 21%, SES2 = 38%) than in the dementia group (SES1 = 26%, SES2 = 21%, p-value = 0.3). While more participants in the dementia group were found to be in the lower SES levels (SES4 = 24%, SES5 = 2.9%) compared to those in the no dementia group (SES4 = 18%, SES5 = 1.4%; p-value = 0.3). 
+We see high a higher proportion of participants with higher SES levels in the no dementia group (SES1 = 21%, SES2 = 38%) than in the dementia group (SES1 = 26%, SES2 = 21%, p-value = 0.3). While more participants in the dementia group were found to be in the lower SES levels (SES4 = 19%) compared to those in the no dementia group (SES4 = 27%, p-value = 0.3). 
 
 ### Derived Anatomic Values
 
@@ -190,81 +191,254 @@ library(GGally)
 # no CDR
 ggpairs(dementia_descript)
 ```
-To check, we used the vif function on our full logistic model that incorporates all the predictors we want to examine. We see that ASF and eTIV both have a VIF value that is greater than 5. As a rule of thumb, VIF values that are greater than 5 have high collinearity and need to be addressed. 
+To check, we used the vif function on our full logistic model that incorporates all the predictors we want to examine. We see that ASF and eTIV both have a VIF value that is greater than 5. As a rule of thumb, VIF values that are greater than 5 have high collinearity and need to be addressed. ASF and eTIV both have high VIF values which are above 5.
 
-We used the Akaike information criterion (AIC) to determine which predictors will be kept in our initial model. The model that provides the lowest AIC value will be the one that provides the best fit model with the least amount of variables to avoid over and under fitting. From the backwards stepwise regression our initial AIC was 142 from the full model but after dropping ASF, we obtain a AIC of 140.27. We can check this by doing a anova test with two models, one with ASF and a reduced one without.
-
+We used the Akaike information criterion (AIC) to determine which predictors will be kept in our initial model. The model that provides the lowest AIC value will be the one that provides the best fit model with the least amount of variables to avoid over and under fitting. From the backwards stepwise regression our initial AIC was 141 from the full model but after dropping ASF, we obtain a AIC of 138.27. We can check this by doing a anova test with two models, one with ASF and a reduced one without.
 ```{r}
-library(MASS)
-
 ## Full model 
 dem_fit <- glm(Group~SES + Age + EDUC +SEX +MMSE+ eTIV+nWBV+ASF, data=dementia_sub, family="binomial")
 summary(dem_fit)
+```
 
+```{r}
 ## multicollinearity
-
 car::vif(dem_fit)
+```
 
+```{r}
+library(MASS)
 # stepwise regression
 dem_step <- dem_fit %>%
   stepAIC(direction='backward',trace = FALSE)
 dem_step
 ```
-To determine if we should drop the ASF variable, we can do anova test to determine of the is a difference between the two models at a significance level of $\alpha=0.05$. 
+To determine if we should drop the ASF variable, we can do partial F-test to determine of the is a difference between the two models at a significance level of $\alpha=0.05$. 
 
-Our null hypothesis is that there is a difference between the two models and we should remove the predictor and the alternative hypothesis is that there is no difference between the two models where we would keep the predictor
+Our null hypothesis is that there is a there is no difference on coefficients if we remove them from our model and the alternative is that at least one of the coefficients removed from the model is non-zero 
+
+
+$$H_o: \text{All coefficients removed from the model are zero}$$
+$$H_a: \text{At least one of the coeffcients removed from the model is non-zero}$$
+
 ```{r}
 anova(dem_step,dem_fit,test='Chisq')
 ```
-We obtain a p-value of 0.966 which means we fail to reject the null hypothesis. This means that there is a difference between the two models and we should use the reduced model for our analysis. 
+We obtain a F test-statistic with df 1,131 and a p-value of 0.9287 which means we fail to reject the null hypothesis. This means we should drop the ASF coefficient because they do not significantly improve the fir of our model. 
+
+#### Confounding
+
+We expect there to be confounders in our dataset as they are linked to multiple risk factors associated with dementia. We expect age, sex, SES and, education all be confounders with dementia. From our stepwise model, the p-value for all of these co-variates are less than our significance level of $\alpha=0.05$, so we did not need to check for confounding by calculating the magnitude of confounding on our primary outcome. 
+
+$$\text{Magnitude of Confoudning} = \frac{|\beta_{unadjusted}-\beta{adjusted}}{\beta_{adjusted}}$$
+Ethnicity may have a confounding effect on the incidence of AD, however, we are unable to adjust for ethnicity since it is unmeasured in our dataset.
+
+
+### Working model
+
+Currently we have a multi-logistic model, from our stepwise selection, that is:
+
+$$\hat{logit(p)} = \hat{\beta_0} + \hat{\beta_1}*\text{SES2} + \hat{\beta_2}*\text{SES3} + \hat{\beta_3}*\text{SES4}+ \hat{\beta_4}*\text{Age} + \hat{\beta_5}*\text{Educ}+ \hat{\beta_6}*\text{Males}+ \hat{\beta_7}*\text{MMSE}+ \hat{\beta_8}*\text{eTIV}+ \hat{\beta_9}*\text{nWBV} $$
+
+$$\hat{logit(p)} = 54.04 - 1.857*\text{SES2} - 0.949*\text{SES3} - 2.477*\text{SES4}- 0.0968*\text{Age}- 0.2778*\text{Education}
++ 1.373*\text{Males}- 0.802*\text{MMSE}- 0.004296*\text{eTIV}- 21.551*\text{nWBV} $$
+Where our baseline is women who are non-demented with the highest SES (SES=1). 
+
+* Outcome: Dementia Status (Binary; Nondemented/Demented)
+
+* Main Exposure: Social economic status (Ordinal; 1,2,3,4)
+
+* Other Variables : Age(Continuous in years; 60 - 96); Education(Continuous in years; 6 - 23); Sex(Binary; Female/Male); MMSE (Continuous; 17-30); eTIV(Continuous in $mm^3$; 1123 - 1987); nWBV(Continuous in mg; 0.66 - 0.8370)
+
 
 ```{r}
 summary(dem_step)
+```
+For this base model without effect modification we have:
 
+* $\beta_0$ = 57.040: the log odds of dementia status of a female who with high SES when all other covariates are held at 0. However, this intercept does not make much sense as we cannot have an age or brain volumes of 0. 
+
+* $\beta_1$ = the difference in log odd of dementia status between SES of 1 and SES 2 for females.
+* $\beta_2$ = the difference in log odd of dementia status between SES of 1 and SES 3 for females.
+* $\beta_3$ = the difference in log odd of dementia status between SES of 1 and SES 4 for females.
+* $\beta_4$ = the change in log odds of dementia status for each 1 year increase in age for females with a SES of 1.
+* $\beta_5$ = the change in log odds of dementia status for each 1 year increase in education for females with a SES of 1.
+* $\beta_6$ = the difference of log odds of dementia status between females and males with a SES of 1 
+* $\beta_7$ = the change in log odds of dementia status for ever 1 point increase in mini-mental state for females with a SES of 1. 
+* $\beta_8$ = the change in log odds of dementia status for ever 1 unit increase in estimated total intracranial volume for females with a SES of 1. 
+* $\beta_9$ = the change in log odds of dementia status for ever 1 unit increase in normalized whole brain volume for females with a SES of 1. 
+
+To convert the log odds to an odds ratio, we will need to exponentiate our beta coefficients.
+
+* $e^{-1.856}$ = 0.156 the odds ratio of SES switching from 1 to 2 is 0.156 () for  
+* $e^{-0.949}$ = 0.387
+* $e^{-2.477}$ = 0.0840
+* $e^{-0.0968}$ = 0.9078 = For every one year increase in age, the odds of dementia is 0.9078 times larger for women in the highest SES
+* $e^{-0.278}$ = 0.757
+* $e^{1.37}$ = 3.95 = The odds of dementia for men is 3.95 times higher than for women at the highest SES level. 
+* $e^{-0.802}$ = 0.448 = For every one point increase in MMSE, the odds of dementia is 0.488 times higher for women in the highest SES
+* $e^{-0.00430}$ = 0.995 = For every 1 unit increase in eTIV, the odds of dementia is 0.995 times higher for women in the highest SES.
+* $e^{-21.55}$ = 0.00
+
+```{r}
 # odds ratio
 exp(coef(dem_step))
-
-#confint
-exp(dem_step$coefficients)
 
 # 95% CI
 exp(confint(dem_step))
 ```
+```{r warning=FALSE, message =FALSE}
+dem_tbl <- dem_step %>%
+  tbl_regression(exponentiate = TRUE) %>%
+  add_global_p()%>%
+  bold_p()%>%
+  add_vif()%>%
+  modify_table_styling(
+    columns = c(estimate, ci),
+    rows = reference_row %in% TRUE,
+    missing_symbol = "1.00"
+  )
+dem_tbl
+```
+### Goodness of fit
 
 
+We can do a hypothesis test for the goodness of fit at the significance level of $\alpha=0.05$, where our null hypothesis is the the model is correct and the data fits. Our alternative hypothesis is that there is an evidence of a lack of fit.
+
+$$H_o: \text{The data is a fits our selected model distrbution}$$
+
+$$H_a: \text{The data is not consistent with our selected model distribution}$$
 
 ```{r}
-# Eduction, AGE confounder with SES 
-summary(glm(Group~SES + Age + EDUC +SEX +MMSE+ eTIV+nWBV, data=dementia_sub, family="binomial"))
-summary(glm(Group~SES + Age + SEX +MMSE+ eTIV+nWBV, data=dementia_sub, family="binomial"))
-
-# confouding calculation
-crude =  57.45
-adjusted = 31.08
-abs(crude-adjusted)/abs(crude)
-
-#interaction age:SEX
-summary(glm(Group~SES + Age + EDUC +SEX + MMSE + eTIV + nWBV + EDUC*SEX, data=dementia_sub, 
-            family="binomial"))
-
-educ_sex_dem <- glm(Group~SES + Age + EDUC +SEX + MMSE + eTIV + nWBV + EDUC*SEX, data=dementia_sub,
-                    family="binomial")
-
-
-anova(dem_step,educ_sex_dem,test='Chisq')
+1-pchisq(118.79,132)
 ```
-
-
+With a Residual deviance of 118.79 on 132 degrees of freedom, we get a probability of 0.7882735, which is greater than our significance level of $\alpha=0.05$. We fail to reject our null hypothesis and we can say that our data is a good fit with our selected model. 
 
 we tested our model using the following logistic regression assumptions:
 
 ### Linearity Assumption
 
+The first assumption for logistic regression is that the relationship between X and the log-odds is linear. We can do this visually by plotting the continuous predictors and the logit of the outcome  and using the Box-Tidwell test and adding all the continuous co-varaites and their corresponding natural log. With an acceptance criteria of $\alpha=0.05$
+
+#### Scatterplots
+
+```{r}
+dem_probs <- predict(dem_step,type = "response")
+predicted.classes <- ifelse(dem_probs >0.5,'Nondemented','Demented')
+
+dementia_num <- dementia_sub %>%
+  dplyr::select_if(is.numeric)%>%
+  dplyr::select(-c(CDR,ASF))
+
+predictors <- colnames(dementia_num)
+
+dementia_num <-dementia_num %>%
+  mutate(logit = log(dem_probs/(1-dem_probs)))%>%
+  gather(key="predictors",value='predictor.value',-logit)
+```
+
+```{r}
+ggplot(dementia_num, aes(logit, predictor.value))+
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = "loess") + 
+  theme_bw() + 
+  facet_wrap(~predictors, scales = "free_y")
+```
+From the graphs we see that MMSE, Education and nWBV are pretty linearly associated with the log-odds. Age does not look linear and might need to be transformed to a higher power (cubic)
+
+#### Box-Tidwell
+
+The Box-Tidwell test adds interactions between the continuous variables and the corresponding natural log into the model. Our null hypothesis is that the our continuous variables are linearly related to the log odds and the alternative hypothesis is that our continuous variables are not linearly related to the log odds. We will be using a significant level of $\alpha=0.05$.
+
+$$H_o: \text{Continuous x variables are linearly related to the log-odds}$$
+
+$$H_a: \text{Continuous x variables are not linearly related to the log-odds}$$
+
+```{r}
+library(car)
+logodds <- dem_step$linear.predictors
+boxTidwell(logodds~ dementia_sub$Age+dementia_sub$EDUC+dementia_sub$MMSE+dementia_sub$eTIV+dementia_sub$nWBV)
+```
+
+From the Box-Tidwell test, we see that the p-values for all of our continuous variables are greater than our significance level of $\alpha=0.05$ Since the p-values are not significant for all our continuous variables, we can say that our continuous x variables are linearly related to the log-odds.
+
 ### Multicollinearity
+Multicollinearity was assessed earlier during during our variable selection. The presence of correlation can cause errors in our results by using redundant information. This could reduce our precision in our analysis. Running the VIF method again on our current model, we don't see any evidence of collinearity between any of our predictor variables.
+
+```{r}
+car::vif(dem_step)
+```
+
 
 ### Influential Points and Outliers
 
+To identify any outliers and influence point in our dataset, we will use boxplots, histograms and look at Cook's distance values. 
+
+#### Boxplots
+
+We can visually look for outliers using boxplots on our continuous variables. 
+```{r}
+dem_boxplot <- dementia_sub %>%
+  dplyr::select(-c(CDR,ASF,SEX,SES))
+
+```
+
+```{r}
+age_box <- ggplot(data = dem_boxplot[,c("Group",'Age')],aes(x=Group, y=Age))+
+  geom_boxplot(aes(fill=Group),show.legend=FALSE)+
+  xlab("")
+
+educ_box <- ggplot(data = dem_boxplot[,c("Group",'EDUC')],aes(x=Group, y=EDUC))+
+  geom_boxplot(aes(fill=Group),show.legend=FALSE)+
+  xlab("")
+
+mmse_box <- ggplot(data = dem_boxplot[,c("Group",'MMSE')],aes(x=Group, y=MMSE))+
+  geom_boxplot(aes(fill=Group),show.legend=FALSE)+
+  xlab("")
+
+eTIV_box <- ggplot(data = dem_boxplot[,c("Group",'eTIV')],aes(x=Group, y=eTIV))+
+  geom_boxplot(aes(fill=Group),show.legend=FALSE)+
+  xlab("")
+
+nWBV_box <- ggplot(data = dem_boxplot[,c("Group",'nWBV')],aes(x=Group, y=nWBV))+
+  geom_boxplot(aes(fill=Group),show.legend=FALSE)+
+  xlab("")
+
+gridExtra::grid.arrange(age_box,educ_box,mmse_box,eTIV_box,nWBV_box,nrow=2,ncol=3)
+```
+We see that MMSE and eTIV both have outliers however, not all outliers are influential observations. To check if they are influential we will look at Cook's Distance measures. 
+
+#### Cook's Distance
+
+As a rule of thumb, if a point has a Cook's distance that is greater than 1, then the data point is likely to be influential. 
+
+```{r}
+plot(dem_step,pch=18,col='red',which=c(4))
+```
+From the plot, we see that the 3 highest values are from point 93 , 135 and 136. However, all 3 points have a Cook's distance that is less than 1 so we can leave them in our model. 
+
+
 ## Secondary Outcome Results (Effect modification/Confounding)
+
+Using all the variables, we tested for effect modification between SES and nWBV and EDUC with nWVB. To test this we will do a likelihood ratio test without and without the interaction term to determine if we need to leave them in our model. The null hypothesis is that there is no difference between the models and our alternative hypothesis is that there is a difference between the two models. We will test this at a significance level of $\alpha=0.05$.
+
+```{r}
+#interaction age:SEX
+
+summary(glm(Group~(SES + Age + EDUC +SEX +MMSE+ eTIV+nWBV)^2,  data=dementia_sub,
+            family="binomial"))
+
+inter<- glm(Group~SES + Age + EDUC +SEX + MMSE + eTIV +nWBV + nWBV*SES, data=dementia_sub, 
+            family="binomial")
+
+summary(inter)
+
+nointer <- glm(Group~SES + Age + EDUC +SEX + eTIV+nWBV, data=dementia_sub, 
+            family="binomial")
+
+anova(nointer,inter,test='Chisq')
+```
+
+
 
 ## Tertiary Outcome Results (Subgroup Analysis)
 
