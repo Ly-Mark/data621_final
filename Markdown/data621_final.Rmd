@@ -1,8 +1,7 @@
 ---
-author: Kimberley Chiu, Marc McCoy, Mark Ly
+author: Kimberley Chiu(ID 00322617), Marc McCoy(ID 30136987), Mark Ly(ID 00504696)
 date: '`r format(Sys.Date())`'
-title: The Impact of Socioeconomic Status and Education on the Incidence of Alzheimer's
-  Disease
+title: The Impact of Socioeconomic Status on the Incidence of Alzheimer's Disease
 subtitle: Data 621 Winter 2022 Course Project
 output:
   pdf_document:
@@ -11,27 +10,26 @@ output:
     toc: true
   html_document: default
 abstract: |
+ \noindent \textbf{Background:} Alzheimer’s Disease (AD) is the leading cause of dementia and sixth leading cause of death in the United States. Patients who experience AD are more likely to have difficulties performing activities of daily living in old age, which can result in decreased quality of life for both the patient and family members. Currently, the pathophysiology of AD is not well understood.\break
  
+ \noindent \textbf{Methods:} This retrospective cohort study of 150 adults aged 60 to 96 that were selected from a larger database of 400 individuals from the Washington University Alzheimer Disease Research Center (ADRC). The primary and secondary objectives were to estimate the risk of dementia (non-demented, demented) based on socioeconomic status (SES) other confounders and covaraites.\break
  
+ \noindent \textbf{Results:} A total of 142 adults were available for study. After screening, 72 patients (50.7%) where identified as non-demented and 70 patients (49.3%) were identified as demented. For our primary outcome, there was a decrease in the odds ratio (OR) as we moved from a high SES (SES=1) to a low SES (SES=4). At the significance level of 0.05, the OR for dementia going from SES=1 to a SES=2 is 0.16 (95% CI: 0.04, 0.58; P=0.008), from SES=1 to a SES=3, we have a OR of 0.39 (95% CI: 0.08, 1.75; P=0.22601) and from SES=1 to SES=4, we have a OR of 0.08 (95% CI: 0.01, 0.54; P=0.011). The OR for age is 0.91 (95% CI: 0.83, 0.99; P=0.021) while the odds ratio for education is 0.76 (95% CI: 0.58, 0.96; P=0.024). For males, the OR is 3.95 (95% CI: 1.14, 15.1; P=0.030) and has the greatest increase in odds developing dementia. In our secondary analysis, we found that sex and education had significant interaction with a p-value from the Wald test of 0.024 at a significance level of 0.05. The likelihood ratio test produced a p-value of 0.020. The sex and education interaction term had a OR of 1.55 (95% CI: 1.07, 2.32; P=0.020).\break
  
+ \noindent \textbf{Conclusion:} Using demographic data as explanatory variables produced a simple analysis that produced counterintuitive results. One major drawback of our study design is it did not account for the fact that patients with a lower SES likely received less timely care than patients with higher SES, which is why the OR for higher level SES categories were less than 1.0. Including repeated measures data, such as the change in nWBV, could act as a proxy explanatory variable for brain atrophy. More sophisticated mixed-effects logistic regression models should be explored in a follow up analysis.\break
  
- 
- 
- 
- \noindent \textbf{Background:} Noise, as the term itself suggests, is most often seen a nuisance to ecological insight, a inconvenient reality that must be acknowledged, a haystack that must be stripped away to reveal the processes of interest underneath. Yet despite this well-earned reputation, noise is often interesting in its own right: noise can induce novel phenomena that could not be understood from some underlying determinstic model alone.\break
- \noindent \textbf{Methods:} Nor is all noise the same, and close examination of differences in frequency, color or magnitude can reveal insights that would otherwise be inaccessible.\break
- \noindent \textbf{Results:} Yet with each aspect of stochasticity leading to some new or unexpected behavior, the time is right to move beyond the familiar refrain of "everything is important" (Bjørnstad & Grenfell 2001).  Stochastic phenomena can suggest new ways of inferring process from pattern, and thus spark more dialog between theory and empirical perspectives that best advances the field as a whole.\break
- \noindent \textbf{Conclusion:} I highlight a few compelling examples, while observing that the study of stochastic phenomena are only beginning to make this translation into empirical inference.  There are rich opportunities at this interface in the years ahead.\break
- \noindent Abstract word count: 350
- \noindent Manuscript word count: 1500
- \noindent Figures: 7 figures 
- \noindent Tables: 7 tables
- \noindent References: \newpage
+ \noindent\textbf{Abstract word count:} 412 words.
+ \textbf{Word count:} 4217.
+ \textbf{Figure:} 10 figures.
+ \textbf{Tables:} 3 tables.
+ \textbf{References:} 7 References.
+ \newpage
+
+ |
 fontsize: 11pt
 # lof: true
 # lot: true
 ---
-
 
 
 \newpage
@@ -49,52 +47,123 @@ library(tidyr)
 library(officer)
 ```
 
-# Introduction: Noise the nuisance
+# Introduction:
+## Background
 
-To many, stochasticity, or more simply, noise,
-is just that -- something which obscures patterns we are trying to infer (Knape & de Valpine 2011); and an ever richer batteries of statistical methods are developed largely in an attempt to strip away this undesirable randomness to reveal the patterns beneath (Coulson 2001).  Over the past several decades, literature in stochasticity has transitioned from thinking of stochasticity in such terms; where noise is a nuisance that obscures the deterministic skeleton of the underlying mechanisms, to the recognition that stochasticity can itself be a mechanism for driving many interesting phenomena (Coulson et al. 2004).  Yet this transition from noise the nuisance to noise the creator of ecological phenomena has had, with a few notable exceptions, relatively little impact in broader thinking about stochasticity.  One of the most provocative of those exceptions has turned the classical notion of noise the nuisance on its head: recognizing that noise driven phenomena can become a tool to reveal underlying processes: to become noise the informer.  Here I argue that this third shift in perspective offers an opportunity to better bridge the divide between respective primarily theoretical and primarily empirical communities by seeing noise not as mathematical curiosity or statistical bugbear, but as a source for new opportunities for inference.
+### Context:
+Major neurocognitive disorder (previously called dementia) is an acquired disorder of cognitive function that may result in impairments in memory, speech, reasoning, intellectual function, and spatial awareness. The pathophysiology of dementia is complex, and research has not yet pinpointed a cause. 
+
+Alzheimer’s disease (AD), which is more prevalent in the female population, is the leading cause of dementia and the sixth leading cause of death in the United States.^2^ Due to the underlying pathophysiology, incidence and prevalence increase significantly with age. AD presents enormous social and economic burdens on society and family members due to the patient's potential challenges with activities of daily living (ADL). Early-onset familial AD, which makes up approximately 10% of AD cases, is particularly challenging, as patients experience symptoms before the age of 65 years old.^2,3^
+
+### Rational:
+Currently, there exists no curative therapy available for AD. However, lifestyle modifications such as adhering to a regular sleep schedule and maintaining a familiar environment may slow the development of symptoms. Physical activity and cognitive rehabilitation exercises such as memory training via puzzles and games have been shown to slow cognitive and functional decline. There is the potential for screening procedures to lower the incidence of AD - as memory training can improve cognitive capabilities through targeted stimulation prior to the patient’s AD worsening to a level where ADLs cannot be performed.^4^ 
+
+The potential impacts for routine screening procedures, prognostic indicators and genetic markers for AD are vast. Studying physiologic changes within the brain assists in the development of research seeking to understand the pathophysiology of AD, which is currently not well understood. 
+
+### Definitions:
+
+The following definitions for widely used terms are described below. Definitions for variables can be found in Table 1. 
+
+* **AD** - Alzheimer's Disease
+* **ADL** - Activities of Daily Living
+* **CDR** - Clinical Dementia Rating Scale
+* **glm** - generalized linear model
+* **Mass** - Modern Applied Statistics with S package in RStudio
+* **OASIS** - Open Access Series of Imaging Studies
+
+\newpage 
+
+
+## Research Question and Objectives
+
+### Research Question(s):
+
+**Primary Analysis:** In older adults aged 60-96 years old, is socioeconomic status (SES) associated with AD as operationalized by binary outcome Group (non-demented, demented) while controlling for age, education, sex, MMSE, eTIV, and nWBV as covariates?  
+
+**Secondary Analysis:** In older adults aged 60-96 years old, are covariates sex and education a confounder or effect modifier for binary outcome Group (non-demented, demented)?  
+
+### Study population:
+
+The study population consists of adults (aged 60 to 96) who are demented and non-demented residing in North America. 
+
+### Study sample:
+
+The study sample consists of 150 adults aged 60 to 96 were selected from a larger database of 400 individuals from the Washington University Alzheimer Disease Research Center (ADRC). The dataset was originally a longitudinal study centered around a series of imaging studies, however information from only the first visit was used in the analysis.  
+
+Subjects with a primary cause of dementia other than AD, active neurological or psychiatric illness, serious head injury, history of clinically meaningful stroke, use of psychoactive drugs, anatomical abnormalities were excluded. Subjects with age-typical brain changes were included. 
+
+## Data Source and Description
+
+### Data Source
+
+The dataset was taken from the Open Access Series of Imaging Studies (OASIS), which is a compilation of open source distributing MRI datasets. OASIS is made available by the Washington University Alzheimer’s Disease Research Center. This dataset is licensed under the CCO 1.0 Universal (CCO 1.0) Public Domain Dedication and is open source where no research ethics approval is required. For the purposes of this project, the assumption is that the measurements were all taken at the end of the study. 
+
+### Data Description
+
+The longitudinal dataset contains 9 demographic, clinical and derived anatomic values for 150 patients. To satisfy the independence assumption, we will only use information from the first visit in our analysis. Covariates include sex (M/F), age (60 - 96), years of education (6 - 23), social economic status (SES; ranked 1-5), mini-mental state examination (MMSE), clinical dementia rating (CDR), estimated total intracranial volume (eTIV), atlas scaling factor (ASF), and normalized whole brain volume (nWBV).  
 
 # Methods
 
 ## Study Design
 
-In arguing for this shift, it essential to recognize this is a call for a bigger tent, not for the rejection of previous paradigms.  What I will characterize as 'noise the nuisance' reflects a predominately statistical approach, in which noise, almost by definition, represents all the processes we are not interested in that create additional variation which might obscure the pattern of interest.  By contrast, an extensive literature has long explored how noise itself can create patterns and explain processes from population cycling to coexistence.  These broad categories should be seen as a spectrum and not be mistaken for either a sharp dichotomy nor a reference to a strictly empirical-theoretical divide.  Each paradigm expands upon rather than rejects the previous notion of noise: the recognition that noise can create novel phenomena does not mean that noise cannot also obscure the signal of some process of interest.  Likewise, seeking to use noise as a novel source of information about underlying processes will be informed by both previous paradigms, as our discussion will illustrate.
+The study is a retrospective cohort study of 150 adults aged 60 to 96 that were selected from a larger database of individuals from the Washington University Alzheimer Disease Research Center (ADRC). The dataset was originally a longitudinal study centered around series of imaging studies, however, to maintain independence assumption in the data, information from only the first visit will be used in the subsequent analysis. 
 
+The sample size is limited to 150 patients, and 8 subjects with missing data were removed. With this given sample size, the study has a power of 31% as seen in Figure 2. Studies on retention in clinical trials show that around 30% of subjects drop out, therefore, to achieve a power of 80% and to account for the dropout rate, a sample size of 712 individuals would be needed as seen in Figure 3.  
 
-## Study population
+## Statistical Principals
 
-The dataset contains 9 demographic, clinical and derived anatomic values for 150 patients. Originally, the dataset was from a longitudinal study however, we plan to use it for this for a logistic regression. To satisfy the independence assumption, we will only use information from the first visit in our analysis. Covariates include sex (M/F), age (60 - 96), years of education (6 - 23), social economic status (SES; ranked 1-5), mini-mental stat examination (MMSE), clinical dementia rating (CDR), estimated total intracranial volume (eTIV), atlas scaling factor (ASF), and normalized whole brain volume (nWBV). Each unique patient was grouped into one of three categories, Nondemented, Demented, and Converted. Subjects that did not have a SES value recorded (8) were excluded from this study. Outliers were identified by checking the distribution. Figure(#) shows the details of our screening and inclusion process. 
+### Level of Significance
+A level of significance of 0.05 was assumed for all statistical tests which were performed. 
 
+### Reporting of Confidence Intervals 
+A logistic regression via the generalized linear model function (glm) in the MASS library will be used. The log odds ratio, and subsequently the odds ratio of the outcome (group) for categorical exposure variable SES (levels 1 – 4) and the corresponding 95 % confidence interval (CI) will be presented. 
 
+The second outcome will be to identify any potential effect modifiers. These potential effect modifiers are sex and education. This will be done by creating an interaction term between each potential effect modifier and the main effect variable of SES. If the interaction term is significant, then that variable can be considered an effect modifier 
 
 ## Study Outcomes
 
 ### Primary Outcome
 
-To emphasize the underlying trend in the changing roles in which we
-see and understand noisy processes, I will also restrict my focus
-to relatively simple models primarily from population ecology context.
-Simplicity not only makes examples (in equations and in code) more
-tractable but also allows us to focus on aspects that are germane to many
-contexts rather than unique to particular complexities (Bartlett 1960; Levins
-41 1966).
+The primary outcome will be to explore in older adults aged 60-96 years old, if socioeconomic status (SES) is associated with AD as operationalized by binary outcome Group (Non-demented, Demented) while controlling for age, education, sex, MMSE, eTIV, and nWBV as covariates. The exponent of the coefficients of covariates to the response outcome Group will be applied to the results as a calculated odds ratio. 
 
 ### Secondary Outcome
 
-## Data collection and data source
+The secondary outcome will be to explore covariates sex and education and their impacts as a confounder or effect modifier for binary outcome Group. The exponent of the coefficients of covariates with interaction terms to the response outcome Group will be applied to the results as a calculated odds ratio. 
 
-The dataset we will be working with is from the Open Access Series of Imaging Studies (OASIS), which is a compilation of open-source distributing MRI datasets. OASIS is made available by the Washington University Alzheimer’s Disease Research Center. This dataset is licensed under the CCO 1.0 Universal (CCO 1.0) Public Domain Dedication and is open source where no research ethics approval is required. For the purposes of this project, we are assuming that the measurements all the measurements were taken at the end of the study.
+## Analysis Methods
+### Data Wrangling
 
-The dataset can be obtained in a csv format that was read into R and analyzed using built-in packages in the R library. Columns for 'Hand','MRI.ID', 'Visit','Subject_ID' and, 'MR.Delay' were excluded from our study. All the patients were right hand and we are only considering the first visit for all the patients so 'Visit' and 'MR.Delay' are not needed. 'MRI.ID' and 'Subject_ID' are not informative so we excluded that column from our analysis. 
+The Group outcome variable will be used as it is divided into two categories (Demented and Non-Demented). The exposure variable, SES, is assessed by the Hollingshead Index of Social Position with 5 categories: 1 being the highest and 5 the lowest. 
 
-Using the _vis miss_ function from the visdat package in R, we created a heatmap to determine the percentage of missing data in each column. There are 8 missing values in the SES variable. Since SES cannot be determined on other values, we will remove the 8 individuals leaving us with 142 left for analysis. 
+For the purposes of this project, we are assuming that measurements for age, SES, education, and group outcome were taken at the end of the study period. 
 
-There are 14 patients in our dataset who under the _Converted_ group however we want to make our group variable a binary variable. We moved 14 patients in the _Converted_ group into the _Demented_. Finally we will convert the categorical columns of 'Group', 'sex' and 'SES' into factors, with 'Group' having two levels (Nondemented, Demented), 'sex' having 2 levels ('F','M'). 
+The dataset was obtained in a csv format that was read into R and analyzed using built-in packages in the R library. Columns for 'Hand', 'MRI.ID', 'Visit', 'Subject_ID' and 'MR.Delay' were excluded from our study. All the patients were right-handed and the first visit only was considered for all the patients, so 'Visit' and 'MR.Delay' columns were excluded. 'MRI.ID' and 'Subject_ID' were also excluded from the analysis as they were not informative.  
 
-From our exploratory analysis, we noticed that for the lowest SES level (5) only had 3 patients in total (1-Nondemented, 2-Demented). As a rule of thumb, we need at least 10 observations for each unique level to provide us with reasonable estimates and standard errors. We have chosen to collapse the lowest level of SES (5) to the second lowest (4) which adjust the SES covaraite to have 4 levels with 1 being the highest and 4 being the lowest.
+From our exploratory analysis, it was noticed that the lowest SES level (5) only had 3 patients in total (1 in Non-demented, 2 in Demented). At least 10 observations for each unique level is needed to provide reasonable estimates and standard errors. Therefore, it was decided to collapse the lowest level of SES (5) to the second lowest (4) which would adjust the SES variable to have 4 levels, with 1 being the highest and 4 being the lowest. 
 
+There are 14 patients in the dataset who were under the “Converted” group; in order to transform the Group variable to a binary variable, the 14 patients were moved from “Converted” group into “Demented” group. Finally, the categorical columns of 'Group', 'sex' and 'SES' were converted into factors, with 'Group' having two levels (Non-demented, Demented), 'sex' having 2 levels ('F','M'). 
 
-```{r message = FALSE, warning = FALSE}
+### Statement on Covariates, Confounding, and Effect Modification:
+
+There are potential confounding variables when investigating the association between SES and Alzheimer’s Disease, and these include: age, sex, SES, and education. Therefore, in this study, we will consider these variables as potential confounders. Additionally, many health and medical studies show that sex and education are often considered to be effect modifiers. This can be explained by how AD is more prevalent in the female population. Therefore, we will test if sex and education have some interaction with SES on the outcome of dementia, and further determine whether the confounding covariates mentioned above have impacts on the analysis. 
+
+### Defining Study Outcomes
+Non-demented is classified as a CDR = 0. Whereas demented is classified as a CDR > 0. CDR is clinical dementia rating and is calculated through a clinical calculator after assessing a patient’s memory, orientation, judgement and problem solving, community affairs, home and hobbies, and personal care. A categorical scoring system is used within each category, and the aggregation of categorical scores is used to derive the CDR value which classifies the patient as demented or non-demented.^5^ Refer to Figure 1 to clarify the units of measurement for each variable. The outcome is calculated via the CDR clinical calculator, but there are no transformations performed on the outcome.
+
+### Assumption Checks:
+Our final model was check for multicollinearity, linearity, independence and potential outliers. the constant variance and normality assumptions are not required as the random aspect of the logistic model is not included as an additive term in the regression equation. A goodness of fit test was performed prior to solidifying the primary outcome model. From there, all interaction terms were tested to look for effect modification between variables. Subsequently, interaction terms were tested one by one via likelihood ratio tests. Testing for confounding was then performed and compared to the 10% magnitude rule.  
+
+### Subgroup Analysis:
+No subgroup analysis will be conducted in this project. 
+
+### Missing Values:
+Using the _vis miss_ function from the _visdat_ package in R, a heatmap was created to determine the percentage of missing data in each column. There are 8 missing values in the SES variable. Since SES cannot be determined on other values, we removed 8 individuals leaving us with 142 left for analysis. See Figure 4 for heatmap. 
+
+### Software for Analysis
+
+RStudio (Version 1.4.1717) was used to perform the data cleaning and statistical analysis on the relationship between dementia and age, considering potential confounding and effect modifiers. Lucidchart (online visual diagramming software) was used to create the methodology flowchart in Figure 5.
+
+```{r message = FALSE, warning = FALSE, include = FALSE}
 # Data wrangling
 dementia <- read.csv("D:/UofC2022/Data621/Project/data621_final/Data/oasis_longitudinal.csv")
 
@@ -126,167 +195,82 @@ dementia_sub$SES <- factor(dementia_sub$SES)
 dementia_sub$Group <- factor(dementia_sub$Group,levels=c("Nondemented",'Demented'))
 dementia_sub$SEX <- factor(dementia_sub$SEX,levels=c("F",'M'))
 
+# scaling nwBV
+dementia_sub$nWBV<- scale(dementia_sub$nWBV)
+
 head(dementia_sub)
 ```
 
-
-## Statistical Methods
-
-### Primary Outcome
-
-We will be using logistic regression to answer our research question to determine the impact SES and education have on dementia. The reason we are using logistics regression for our analysis is due to our primary outcome, dementia, will be examined as a binary outcome of no dementia and dementia. 
-
-### Secondary Outcome
-
-We will examine any potential effect modifier 
-
-### Tertiary Outcome
-
-Ordinary logisitic regression with CDR of 0 0.5 and 1.0
-
-### Software for Analysis
-
-RStudio (Version 1.4.1717) was used to perform the data cleaning and statistical analysis on the relationship between dementia and age, considering potential confounding and effect modifiers. 
 
 # Results
 
 ## Descriptive Statistics
 
-The descriptive statistics for the potential predictors of dementia (n = 70) and nondemented (n = 72) for individuals between the ages of 60 - 96 years old can be found in the figure (#) using the _gtsummary_ package in R. The p-values reported in the figure are calculated for the Person's Chi-Squared test for categorical variables with expected cell counts $\geq 5$, Wilcoxon rank sum test for numerical variables and, a Fisher's exact test for categorical variables with an expected cell count $<5$. We used a significance level of $alpha=0.05$ to compare our findings. 
+The descriptive statistics for the potential predictors of dementia (n = 70) and nondemented (n = 72) for individuals between the ages of 60 - 96 years old can be found in the Table 1 using the _gtsummary_ package in R. The p-values reported in the figure are calculated for the Person's Chi-Squared test for categorical variables and Wilcoxon rank sum test for numerical variables. We used a significance level of $alpha=0.05$ to compare our findings. A summary of our findings can be found in Table 1.
 
-### Demographic variables
+The Person's Chi-Squared test determines if there is a statistical significance between categorical variables. Where the null hypothesis is that there is no relationship between categorical variables and the alternative hypothesis is that there is a relationship between the categorical variables. The Wilcoxon Rank sum test is a nonparametric test to determine if two groups are derived from the same population. The null hypothesis for is that the two populations are equal, and the alternative hypothesis is that the two populations are not equal. 
 
-There were significantly more female participants in the nondementia group (69%) than the dementia group (49%, p-value = 0.011). The mean age of people who did not have dementia was 75 years old (sd = 8) which is exactly the same as those in the  dementia group (75 years old, sd =7; p-value = >0.9). The mean years of education were also the same in both the nondemented (15 years, sd = 3) and demented groups (14 years, sd = 3; p-value = 0.029).
+There were significantly more female participants in the non-demented group (69%) than the dementia group (49%, p-value = 0.011). The mean age of people who did not have dementia was 75 years old (sd = 8) which is exactly the same as those in the  dementia group (75 years old, sd =7; p-value = >0.9). The mean years of education were also the same in both the Non-demented (15 years, sd = 3) and demented groups (14 years, sd = 3; p-value = 0.029).
 
-We see high a higher proportion of participants with higher SES levels in the no dementia group (SES1 = 21%, SES2 = 38%) than in the dementia group (SES1 = 26%, SES2 = 21%, p-value = 0.3). While more participants in the dementia group were found to be in the lower SES levels (SES4 = 19%) compared to those in the no dementia group (SES4 = 27%, p-value = 0.3). 
+We see high a higher proportion of participants with higher SES levels in the non-dementia group (SES1 = 21%, SES2 = 38%) than in the dementia group (SES1 = 26%, SES2 = 21%, p-value = 0.3). While more participants in the dementia group were found to be in the lower SES levels (SES4 = 19%) compared to those in the non-dementia group (SES4 = 27%, p-value = 0.3). 
 
-### Derived Anatomic Values
+Age and SES both have a p-value that is greater than our significance level of $\alpha=0.05$ (Age = >0.9, SES = 0.2). In both cases will fail to reject the null hypothesis. In terms of Age we would say that the two populations (Non-demented, Demented) are equal and for SES we would say that there is no relationship between the categorical variables. 
 
-The Estimated total intracranial volume (eTIV), Atlas scaling factor (ASF) and, Normalized whole brain volume (nWBV) mean values for both the non dementia group (eTIV = 1,480, sd = 184; p-value = 0.8, nWBV = 0.75, sd = 0.04; p-value = 0.002, ASF = 1.20, sd = 0.14; p-value = 0.8) and the dementia group (eTIV = 1,471, sd = 167; p-value = 0.8, nWBV = 0.73, sd = 0.03; p-value = 0.002, ASF = 1.21, sd = 0.13; p-value = 0.8).
-
-```{r warning=FALSE} 
-library(gtsummary)
-dementia_descript <- subset(dementia_sub, select= -c(CDR))
-dementia_descript %>%
-  tbl_summary(
-    by = Group,
-    # sort = all_categorical()~'frequency',
-    statistic = list(all_continuous() ~ "{mean} ({sd})",
-                     all_categorical() ~ "{n} ({p}%)"),
-    missing_text = "(Missing)"
-  ) %>%
-  add_p()%>%
-  modify_header(label = "**Variable**") %>% bold_labels()
-```
+The Estimated total intracranial volume (eTIV), Atlas scaling factor (ASF) and, Normalized whole brain volume (nWBV) mean values for both the non dementia group (eTIV = 1,480, sd = 184; p-value = 0.8, nWBV = 0.26, sd = 1.04; p-value = 0.002, ASF = 1.20, sd = 0.14; p-value = 0.8) and the dementia group (eTIV = 1,471, sd = 167; p-value = 0.8, nWBV = -0.27, sd = 0.89; p-value = 0.002, ASF = 1.21, sd = 0.13; p-value = 0.8).
 
 
 ## Primary Outcome Results (Logistic Regression)
 
+The main deviation from our SAP was switching our from a cross sectional dataset to a longitudinal dataset. After further investigation, we determined that the majority of the missing data was due to the selection criteria of participants. Only those that were over the age of 60 were select to undergo the full clinical assessment. Initially, we planed on using age as our primary indicator however, that does not align with our research question and after further discussion, our primary indicator changed from age to SES. For our primary analysis, we changed from a uni-variate model to a multivariate model that included all relevant covaraites and confounding terms. Our secondary analysis was modified to explore any interaction effects rather than performing a ordinal logistic regression on based on CDR levels in our SAP. 
+
 ### Variable selection
 
-We selected our variables for our final model using a pairwise plot from GGAlly, vif function from the car and the backwards stepwise variable selection from the MASS package. From the pairwise plot, there are a few variables with high correlations which could indicate multicollinearity (eTIV & ASF). 
+Variables selection was done using pairwise plot from GGAlly, vif function from the car and the backwards stepwise variable selection from the MASS package. ASF and eTIV both have a VIF value that is greater than 5 and have high collinearity that needs to be addressed. We performed backwards stepwise regression to determine which covariates to keep in our model. Our initial AIC was 141 from the full model and 138.27 after dropping ASF variable. A partial f-test was done at a significance level of 0.05 to determine if we should drop the ASF variable. Our null hypothesis is that there is a there is no difference on coefficients if we remove them from our model and the alternative is that at least one of the coefficients removed from the model is non-zero. With a f test-statistic with df 1,131 and a p-value of 0.9287 which means we fail to reject the null hypothesis and drop the ASF coefficient because it does not significantly improve the fit of our model. 
 
-```{r message = FALSE, warning= FALSE}
+```{r message = FALSE, warning= FALSE, include = FALSE}
 library(GGally)
+dementia_descript <- subset(dementia_sub, select= -c(CDR))
 # no CDR
 ggpairs(dementia_descript)
 ```
-To check, we used the vif function on our full logistic model that incorporates all the predictors we want to examine. We see that ASF and eTIV both have a VIF value that is greater than 5. As a rule of thumb, VIF values that are greater than 5 have high collinearity and need to be addressed. ASF and eTIV both have high VIF values which are above 5.
 
-We used the Akaike information criterion (AIC) to determine which predictors will be kept in our initial model. The model that provides the lowest AIC value will be the one that provides the best fit model with the least amount of variables to avoid over and under fitting. From the backwards stepwise regression our initial AIC was 141 from the full model but after dropping ASF, we obtain a AIC of 138.27. We can check this by doing a anova test with two models, one with ASF and a reduced one without.
-```{r}
+```{r include = FALSE}
 ## Full model 
 dem_fit <- glm(Group~SES + Age + EDUC +SEX +MMSE+ eTIV+nWBV+ASF, data=dementia_sub, family="binomial")
 summary(dem_fit)
 ```
 
-```{r}
+```{r include = FALSE}
 ## multicollinearity
 car::vif(dem_fit)
 ```
 
-```{r}
+```{r include = FALSE} 
 library(MASS)
 # stepwise regression
 dem_step <- dem_fit %>%
   stepAIC(direction='backward',trace = FALSE)
 dem_step
 ```
-To determine if we should drop the ASF variable, we can do partial F-test to determine of the is a difference between the two models at a significance level of $\alpha=0.05$. 
 
-Our null hypothesis is that there is a there is no difference on coefficients if we remove them from our model and the alternative is that at least one of the coefficients removed from the model is non-zero 
-
-
-$$H_o: \text{All coefficients removed from the model are zero}$$
-$$H_a: \text{At least one of the coeffcients removed from the model is non-zero}$$
-
-```{r}
+```{r include = FALSE}
 anova(dem_step,dem_fit,test='Chisq')
 ```
-We obtain a F test-statistic with df 1,131 and a p-value of 0.9287 which means we fail to reject the null hypothesis. This means we should drop the ASF coefficient because they do not significantly improve the fir of our model. 
 
-#### Confounding
+### Confounding
 
-We expect there to be confounders in our dataset as they are linked to multiple risk factors associated with dementia. We expect age, sex, SES and, education all be confounders with dementia. From our stepwise model, the p-value for all of these co-variates are less than our significance level of $\alpha=0.05$, so we did not need to check for confounding by calculating the magnitude of confounding on our primary outcome. 
+We expect there to be confounders in our dataset as they are linked to multiple risk factors associated with dementia. From our stepwise model, the Wald test p-values for all of of our covariates are less than our significance level of $\alpha=0.05$. A check for for confounding was not needed. Ethnicity may also have a confounding effect on the incidence of AD, however, we are unable to adjust for ethnicity since it is unmeasured in our dataset.
 
-$$\text{Magnitude of Confoudning} = \frac{|\beta_{unadjusted}-\beta{adjusted}}{\beta_{adjusted}}$$
-Ethnicity may have a confounding effect on the incidence of AD, however, we are unable to adjust for ethnicity since it is unmeasured in our dataset.
+### Regression analysis
 
-
-### Working model
-
-Currently we have a multi-logistic model, from our stepwise selection, that is:
-
-$$\hat{logit(p)} = \hat{\beta_0} + \hat{\beta_1}*\text{SES2} + \hat{\beta_2}*\text{SES3} + \hat{\beta_3}*\text{SES4}+ \hat{\beta_4}*\text{Age} + \hat{\beta_5}*\text{Educ}+ \hat{\beta_6}*\text{Males}+ \hat{\beta_7}*\text{MMSE}+ \hat{\beta_8}*\text{eTIV}+ \hat{\beta_9}*\text{nWBV} $$
-
-$$\hat{logit(p)} = 54.04 - 1.857*\text{SES2} - 0.949*\text{SES3} - 2.477*\text{SES4}- 0.0968*\text{Age}- 0.2778*\text{Education}
-+ 1.373*\text{Males}- 0.802*\text{MMSE}- 0.004296*\text{eTIV}- 21.551*\text{nWBV} $$
-Where our baseline is women who are non-demented with the highest SES (SES=1). 
-
-* Outcome: Dementia Status (Binary; Nondemented/Demented)
-
-* Main Exposure: Social economic status (Ordinal; 1,2,3,4)
-
-* Other Variables : Age(Continuous in years; 60 - 96); Education(Continuous in years; 6 - 23); Sex(Binary; Female/Male); MMSE (Continuous; 17-30); eTIV(Continuous in $mm^3$; 1123 - 1987); nWBV(Continuous in mg; 0.66 - 0.8370)
-
-
-```{r}
+From our backwards stepwise selection we have 7 significant predictors to be kept. Our baseline is women who are non-demented with the highest SES (SES=1). Our main outcome is dementia status which is binary (non-demented/demented) and our main exposure is social economic status which is ordinal (1,2,3,4).
+```{r include = FALSE}
 summary(dem_step)
 ```
-For this base model without effect modification we have:
 
-* $\beta_0$ = 57.040: the log odds of dementia status of a female who with high SES when all other covariates are held at 0. However, this intercept does not make much sense as we cannot have an age or brain volumes of 0. 
-
-* $\beta_1$ = the difference in log odd of dementia status between SES of 1 and SES 2 for females.
-* $\beta_2$ = the difference in log odd of dementia status between SES of 1 and SES 3 for females.
-* $\beta_3$ = the difference in log odd of dementia status between SES of 1 and SES 4 for females.
-* $\beta_4$ = the change in log odds of dementia status for each 1 year increase in age for females with a SES of 1.
-* $\beta_5$ = the change in log odds of dementia status for each 1 year increase in education for females with a SES of 1.
-* $\beta_6$ = the difference of log odds of dementia status between females and males with a SES of 1 
-* $\beta_7$ = the change in log odds of dementia status for ever 1 point increase in mini-mental state for females with a SES of 1. 
-* $\beta_8$ = the change in log odds of dementia status for ever 1 unit increase in estimated total intracranial volume for females with a SES of 1. 
-* $\beta_9$ = the change in log odds of dementia status for ever 1 unit increase in normalized whole brain volume for females with a SES of 1. 
-
-To convert the log odds to an odds ratio, we will need to exponentiate our beta coefficients.
-
-* $e^{-1.856}$ = 0.156 the odds ratio of SES switching from 1 to 2 is 0.156 () for  
-* $e^{-0.949}$ = 0.387
-* $e^{-2.477}$ = 0.0840
-* $e^{-0.0968}$ = 0.9078 = For every one year increase in age, the odds of dementia is 0.9078 times larger for women in the highest SES
-* $e^{-0.278}$ = 0.757
-* $e^{1.37}$ = 3.95 = The odds of dementia for men is 3.95 times higher than for women at the highest SES level. 
-* $e^{-0.802}$ = 0.448 = For every one point increase in MMSE, the odds of dementia is 0.488 times higher for women in the highest SES
-* $e^{-0.00430}$ = 0.995 = For every 1 unit increase in eTIV, the odds of dementia is 0.995 times higher for women in the highest SES.
-* $e^{-21.55}$ = 0.00
-
-```{r}
-# odds ratio
-exp(coef(dem_step))
-
-# 95% CI
-exp(confint(dem_step))
-```
-```{r warning=FALSE, message =FALSE}
+_Table 2. Primary Outcomes of Dementia and Socioeconomic Status_
+```{r warning=FALSE, message =FALSE , echo=FALSE}
+library(gtsummary)
 dem_tbl <- dem_step %>%
   tbl_regression(exponentiate = TRUE) %>%
   add_global_p()%>%
@@ -299,90 +283,86 @@ dem_tbl <- dem_step %>%
   )
 dem_tbl
 ```
-### Goodness of fit
+From Table 2 above, SES (p-value = 0.011), age (p-value = 0.021), education (p-value = 0.024), sex (p-value = 0.030), MMSE(p-value = <0.001), eTIV (p-value = 0.013) and nWBV (p-value = 0.019) are all significant under 0.05. 
 
+At the significance level of 0.05, the OR for dementia going from a high SES level (1) to a slightly lower SES level (2) is 0.16 (95% CI: 0.04, 0.58; p-value=0.008), this means that the patient is 84.0% less likely to develop dementia as they move down from SES 1 to SES 2. Going from a SES of 1 to a SES of 3, we have a OR of 0.39 (95% CI: 0.08, 1.75; p-value=0.22601), which means that the patient is 61% less likely to develop dementia when moving from a SES of 1 to a SES 3, however these value is statistically insignificant as the p-value is greater than our acceptance criteria $\alpha = 0.05$ and the confidence interval does include 1. Finally, going from SES 1 to lowest SES (4), we have a OR of 0.08 (95% CI: 0.01, 0.54; p-value=0.011) which means that a patient is 92% less likely to develop dementia as they move from SES 1 to SES 4. The OR for age is 0.91 (95% CI: 0.83, 0.99; p-value = 0.021) which means the patient is 0.09% less likely to develop dementia for every one year increase in age. The odds ratio for education is 0.76 (95% CI: 0.58, 0.96; p-value=0.024), where the patient is 24% less likely to develop dementia for every additional year of education they have. The OR for males is 3.95 (95% CI: 1.14, 15.1; p-value = 0.030) which means that males have a 3.95 times greater odds of developing dementia than women. The OR for MMSE is 0.45 (95% CI: 0.30, 0.61; p-value = <0.001), which means that the patient is 55% less likely to develop dementia for every 1 unit increase in MMSE. The OR for eTIV is 1.00 (95% CI: 0.99, 1.00; p-value=0.013), which means that every one unit increase in eTIV does not change the odds of dementia. Finally, the OR for nWBV is 0.45 (95% CI: 0.22, 0.88; p-value=0.019) after standard scaling using the mean and standard deviation. From these odds ratio, the sex of the patient has the greatest increase in odds of a patient developing dementia. The greatest decrease in odds of dementia is from SES level. We expected a higher odds of dementia for every change in SES status.  
 
-We can do a hypothesis test for the goodness of fit at the significance level of $\alpha=0.05$, where our null hypothesis is the the model is correct and the data fits. Our alternative hypothesis is that there is an evidence of a lack of fit.
+### Goodness of Fit
 
-$$H_o: \text{The data is a fits our selected model distrbution}$$
+A goodness of fit hypothesis test was done at the significance level of $\alpha=0.05$, where our null hypothesis is the the model is correct and the data fits. Our alternative hypothesis is that there is an evidence of a lack of fit. With a Residual deviance of 118.79 on 132 degrees of freedom, we get a probability of 0.788, which is greater than our significance level of $\alpha=0.05$. We fail to reject our null hypothesis and we can say that our data is a good fit with our selected model. 
 
-$$H_a: \text{The data is not consistent with our selected model distribution}$$
-
-```{r}
+```{r include = FALSE}
 1-pchisq(118.79,132)
 ```
-With a Residual deviance of 118.79 on 132 degrees of freedom, we get a probability of 0.7882735, which is greater than our significance level of $\alpha=0.05$. We fail to reject our null hypothesis and we can say that our data is a good fit with our selected model. 
+```{r include = FALSE}
+library(rms)
+library(performance)
+performance_hosmer(dem_step, n_bins = 10)
+```
 
-we tested our model using the following logistic regression assumptions:
+## Assumptions and Model Diagnostics
 
 ### Linearity Assumption
 
-The first assumption for logistic regression is that the relationship between X and the log-odds is linear. We can do this visually by plotting the continuous predictors and the logit of the outcome  and using the Box-Tidwell test and adding all the continuous co-varaites and their corresponding natural log. With an acceptance criteria of $\alpha=0.05$
+The linearity assumption assumes that our continuous variables, X, and the log-odds are linear. Figure 7 contains the plots of the logit versus our continuous predictors.MMSE, Education and nWBV look somewhat linear with the log-odds. Age does not look linear and may need to be transformed to a higher power (cubic). The Box-Tidwell test adds interactions between the continuous variables into the model. Our null hypothesis is that the our continuous variables are linearly related to the log odds and the alternative hypothesis is that our continuous variables are not linearly related to the log odds. At a significant level of $\alpha=0.05$, the p-values for all continuous variables are greater than our significance level of $\alpha=0.05$. We will fall to reject our null and say that our continuous x variables are linearly related to the log-odds. Our linearity assumption has been met.
 
-#### Scatterplots
+### Independence Assumption
+As we are only using the first visit for each patient in the longitudinal dataset, each patient is unique and only counted once. Using the data in this format, we can say that our independence assumption has been met. 
 
-```{r}
-dem_probs <- predict(dem_step,type = "response")
-predicted.classes <- ifelse(dem_probs >0.5,'Nondemented','Demented')
-
-dementia_num <- dementia_sub %>%
-  dplyr::select_if(is.numeric)%>%
-  dplyr::select(-c(CDR,ASF))
-
-predictors <- colnames(dementia_num)
-
-dementia_num <-dementia_num %>%
-  mutate(logit = log(dem_probs/(1-dem_probs)))%>%
-  gather(key="predictors",value='predictor.value',-logit)
-```
-
-```{r}
-ggplot(dementia_num, aes(logit, predictor.value))+
-  geom_point(size = 0.5, alpha = 0.5) +
-  geom_smooth(method = "loess") + 
-  theme_bw() + 
-  facet_wrap(~predictors, scales = "free_y")
-```
-From the graphs we see that MMSE, Education and nWBV are pretty linearly associated with the log-odds. Age does not look linear and might need to be transformed to a higher power (cubic)
-
-#### Box-Tidwell
-
-The Box-Tidwell test adds interactions between the continuous variables and the corresponding natural log into the model. Our null hypothesis is that the our continuous variables are linearly related to the log odds and the alternative hypothesis is that our continuous variables are not linearly related to the log odds. We will be using a significant level of $\alpha=0.05$.
-
-$$H_o: \text{Continuous x variables are linearly related to the log-odds}$$
-
-$$H_a: \text{Continuous x variables are not linearly related to the log-odds}$$
-
-```{r}
+```{r include = FALSE}
 library(car)
-logodds <- dem_step$linear.predictors
-boxTidwell(logodds~ dementia_sub$Age+dementia_sub$EDUC+dementia_sub$MMSE+dementia_sub$eTIV+dementia_sub$nWBV)
-```
+dementia <- read.csv("D:/UofC2022/Data621/Project/data621_final/Data/oasis_longitudinal.csv")
+# selecting only first visit
+dementia <- dementia[dementia$Visit == 1,]
 
-From the Box-Tidwell test, we see that the p-values for all of our continuous variables are greater than our significance level of $\alpha=0.05$ Since the p-values are not significant for all our continuous variables, we can say that our continuous x variables are linearly related to the log-odds.
+# removing columns 
+dementia <- dementia %>% 
+  dplyr::select(-c(Hand,MRI.ID,Subject.ID,Visit,MR.Delay))
+
+dementia_sub <- dementia %>% drop_na()
+
+# moving converted
+dementia_sub['Group'][dementia_sub['Group']=="Converted"] <- "Demented"
+
+# rename columns
+dementia_sub <- dementia_sub %>%
+  rename(SEX = M.F)
+
+# collapse levels
+dementia_sub$SES <- replace(dementia_sub$SES, dementia_sub$SES == 5,4)
+
+# creating factors
+dementia_sub$SES <- factor(dementia_sub$SES)
+dementia_sub$Group <- factor(dementia_sub$Group,levels=c("Nondemented",'Demented'))
+dementia_sub$SEX <- factor(dementia_sub$SEX,levels=c("F",'M'))
+
+
+
+logodds <- dem_step$linear.predictors
+boxTidwell(logodds~ dementia_sub$Age + dementia_sub$EDUC + dementia_sub$MMSE +
+             dementia_sub$eTIV + dementia_sub$nWBV)
+```
 
 ### Multicollinearity
-Multicollinearity was assessed earlier during during our variable selection. The presence of correlation can cause errors in our results by using redundant information. This could reduce our precision in our analysis. Running the VIF method again on our current model, we don't see any evidence of collinearity between any of our predictor variables.
+Multicollinearity was assessed during our variable selection. The presence of correlation can cause errors in our results by using redundant information and could reduce our precision in our analysis. We don't see any evidence of collinearity between any of our predictor variables based on vif values.
 
-```{r}
+```{r include = FALSE}
 car::vif(dem_step)
 ```
 
 
 ### Influential Points and Outliers
 
-To identify any outliers and influence point in our dataset, we will use boxplots, histograms and look at Cook's distance values. 
+Boxplots and Cook's distance values were used to identify outliers and influential points. In Figure 7, we see that MMSE and eTIV both have outliers however, not all outliers are influential observations. If a point has a Cook's distance that is greater than 1, then the data point is likely to be influential. From Figure 8, we see that the 3 highest values are from point 93 , 135 and 136. However, all 3 points have a Cook's distance that is less than 1 so we can leave them in our model. 
 
-#### Boxplots
 
-We can visually look for outliers using boxplots on our continuous variables. 
-```{r}
+```{r include = FALSE}
 dem_boxplot <- dementia_sub %>%
   dplyr::select(-c(CDR,ASF,SEX,SES))
 
 ```
 
-```{r}
+```{r include = FALSE}
 age_box <- ggplot(data = dem_boxplot[,c("Group",'Age')],aes(x=Group, y=Age))+
   geom_boxplot(aes(fill=Group),show.legend=FALSE)+
   xlab("")
@@ -405,124 +385,239 @@ nWBV_box <- ggplot(data = dem_boxplot[,c("Group",'nWBV')],aes(x=Group, y=nWBV))+
 
 gridExtra::grid.arrange(age_box,educ_box,mmse_box,eTIV_box,nWBV_box,nrow=2,ncol=3)
 ```
-We see that MMSE and eTIV both have outliers however, not all outliers are influential observations. To check if they are influential we will look at Cook's Distance measures. 
 
-#### Cook's Distance
-
-As a rule of thumb, if a point has a Cook's distance that is greater than 1, then the data point is likely to be influential. 
-
-```{r}
+```{r include=FALSE}
 plot(dem_step,pch=18,col='red',which=c(4))
 ```
-From the plot, we see that the 3 highest values are from point 93 , 135 and 136. However, all 3 points have a Cook's distance that is less than 1 so we can leave them in our model. 
 
+## Secondary Outcome Results (Effect modification)
 
-## Secondary Outcome Results (Effect modification/Confounding)
+Within the literature, we expect sex to be an effect modifier on all our variables. The p-values from the Wald test show that only sex and education had a significant p-value of 0.024 ($\alpha=0.05$). For a likelihood ratio test, the null hypothesis is there is no difference between the models (no effect modification) and our alternative hypothesis is that there is a difference between the two models (effect modification). The p-value for testing sex as a effect modifier was 0.020 ($\alpha=0.05$) which means that we reject our null hypothesis and will include this interaction term in our model. The OR for the interaction between sex and education is 1.55 (95% CI: 1.07, 2.32; p-value = 0.020) which is the odds association between males and education at the highest SES level (SES=1). A summary of the outcomes from the secondary analysis can be found in Table 3.
 
-Using all the variables, we tested for effect modification between SES and nWBV and EDUC with nWVB. To test this we will do a likelihood ratio test without and without the interaction term to determine if we need to leave them in our model. The null hypothesis is that there is no difference between the models and our alternative hypothesis is that there is a difference between the two models. We will test this at a significance level of $\alpha=0.05$.
-
-```{r}
+```{r include=FALSE}
 #interaction age:SEX
+# 
+# summary(glm(Group~(SES + Age + EDUC +SEX +MMSE+ eTIV+nWBV)^2,  data=dementia_sub,
+#             family="binomial"))
 
-summary(glm(Group~(SES + Age + EDUC +SEX +MMSE+ eTIV+nWBV)^2,  data=dementia_sub,
-            family="binomial"))
-
-inter<- glm(Group~SES + Age + EDUC +SEX + MMSE + eTIV +nWBV + nWBV*SES, data=dementia_sub, 
+inter<- glm(Group~SES + Age + EDUC +SEX + MMSE + eTIV +nWBV + SEX*EDUC, data=dementia_sub, 
             family="binomial")
 
 summary(inter)
 
-nointer <- glm(Group~SES + Age + EDUC +SEX + eTIV+nWBV, data=dementia_sub, 
+nointer <- glm(Group~SES + Age + EDUC +SEX + MMSE + eTIV+nWBV, data=dementia_sub, 
             family="binomial")
 
 anova(nointer,inter,test='Chisq')
+
+exp(inter$coef)
+
 ```
 
 
+# Conclusion
 
-## Tertiary Outcome Results (Subgroup Analysis)
+Socioeconomic status is associated with Alzheimer’s disease as operationalized by group (non-demented, demented) while controlling for: age, education, sex, MMSE, ETIV, and NWBV as covariates. There were three deviations from our initial expectations that were rooted in the literature when analyzing the results. Recall that the base case was for sex as female with a SES=1. It was found that the odds dementia for males is 3.95 times the odds of dementia for women, this is conflicting with current literature as female prevalence is higher according to medical literature. The lower odds ratio for higher SES was also contradictory to expectations. We observed that the odds of the patient being demented with SES = 4 is 0.08x the odds of a patient with an SES=1. We expect that this OR was larger than one the result of censoring due to death. As mentioned in the descriptive statistics section, the average age of our sample patients was around 75, which is the peak prevalence of AD. Patients with AD are likely to die at an earlier age than patients who do not have AD. 
 
+We realized after performing our analysis that we treated the eTIV and nWBV variables inappropriately in our statistical analysis plan and should have considered the delta over time of nWBV as an explanatory variable (or a proxy for brain atrophy), and because eTIV doesn’t change over the patient’s lifetime, but nWBV may possibly change, taking a ratio of nWBV/eTIV would have been more appropriate for our study.
 
-Demographic stochasticity refers to fluctuations in population sizes
-or densities that arise from the fundamentally discrete nature of
-individual birth and death events.  Demographic stochasticity is a
-particularly instructive case for illustrating a mechanism for how
-noise arises as an aggregate description from a lower-level mechanistic
-process.  We summarize the myriad lower-level processes that
-mechanistically lead to the event of a 'birth' in the population
-as a probability: In a population of N identical individuals at
-time t, a birth occurs with probability b_t(N_t) (_i.e._ a rate
-that can depend on the population size, N), which increases the
-population size to N+1. Similarly, death events occur with probability
-d_t(N_t), decreasing the population size by one individual, to N-1.  Assuming
-each of these events are independent, this is a state-dependent
-Poisson process. The change in the probability of being in state
-N is given by the sum over the ways to enter the state, minus the
-ways to leave the state: a simple expression of probability balance
-known as the master equation (Kampen 2007).  Note that in general
-this approach is equally applicable to stochastic transitions of any sort,
-not just step sizes of +/- 1 and not just birth and death events, but
-can include transitions between stage classes or trait values, including
-mutations to continuously-valued traits in evolutionary dynamics (e.g. Boettiger et al. 2010).
+## Limitations
 
-# Conclusion or Discussion
-The  Gillespie (1977) provides an exact algorithmcfor simulating demographic stochasticity at an individual level.
+Major limitations stem from the intuition which underpins our model construction – research has not yet proven the directionality of the relationship between symptoms and pathophysiology – changes in the brain could be the result of AD or they could be the cause, therefore including them as covariates may not be appropriate. Another limitation of the current data is that the sample size was small with 150 subjects. This coincided with a power of 31%. For 80% power, a sample size of 712 individuals is required to have a robust final sample size including the 30% dropout rate factor. For future studies, we would obtain a sample size of 712 to achieve adequate power. There is also a high likelihood of measurement bias because different physicians performed the clinical tests that were used to derive the CDR data and ultimately demented vs. non-demented status of the patient. Another drawback of our study design is it did not account for the fact that patients with a lower SES likely received less timely care than patients with higher SES – which is why our OR for higher level SES categories were less than 1.
+
+## Future plans 
+
+Future plans would include revisiting the study design to properly incorporate the change or delta in nWBV as an explanatory variable. This would be a better proxy for brain atrophy, which is considered to be one of the key drivers of the symptoms of AD.  Using the ratio of (nWBV/eTIV) over time could also be explored. It can be clearly seen from Figure 9, that the nWBV drops more rapidly over 2-4 year timespans in patients who exhibit clinical symptoms of AD; the slopes with CDR of 0.5 or CDR of 1 are steeper than the slopes with a CDR = 0 on average. This is intuitive as brain atrophy is documented in the literature as being associated with AD. If we were to include the change in (nWBV/eTIV) as a explanatory variable, however, our study would have repeated measures for the same sample, and we would lose the previously met assumption of independence and would need to use a mixed-effects logistic regression model to account for this. This could be done via the _xtmelogit_ command in R.
+
+Alternative future plans include placing more emphasis on social determinants of health, as opposed to demographic variables, as explanatory variables. One major drawback of our study design is it did not account for the fact that patients with a lower SES likely received less timely care than patients with higher SES – which is why our OR for higher level SES categories were less than 1. We could look at ways of designing a data collection process that would ensure the data represented this health access disparity (Figure 10).
+
 
 # Contribution statement
-The algorithm is a simple and direct implementation of the master equation, progressing in random step sizes determined by the waiting time until the next event. Free from both the approximations and mathematical complexity, the Gillespie algorithm is an interesting example of where we rely on a numerical implementation to check the accuracy of an analytic approximation, even in the case of simple models such as we will discuss.  Though the  algorithm is often maligned as numerically demanding, it can be run much more effectively even on large models on today's computers than when it was first developed in the 70s, and remains an underutilized approach for writing simple and approximation-free^[that is, free from the approximation made by SDE models as we see in the van Kampen example.  All models are, of course, only approximations.] stochastic ecological models.
+Mark Ly contributed to model building and assumption checking. General skeleton for R markdown file. Wrote sections for methods and results.  
 
-# Table and Figures
-As our objective is to tie the origins of noise more closely to biological
-processes, it will be helpful to make the notion of a master equation concrete with a specific example.  We will focus on the classic case of Levins (1969) patch model, to illustrate the Gillespie algorithm and the van Kampen system size expansion
+Marc McCoy contributed to the construction of the lucid chart and supported methods. Wrote sections: introduction, conclusions drawn, limitations, and future plans. 
 
-\begin{align}
-\frac{\mathrm{d} n}{\mathrm{d} t} = \underbrace{c n \left(1 - \frac{n}{N}\right)}_{\textrm{birth}} - \underbrace{e n}_{\textrm{death}}, \label{levins}
-\end{align}
+Kimberley Chiu contributed to building the report sections: introduction, methods, conclusion, quality checking, and finding relevant research statistics. 
 
-# Appendix
-where n individuals compete for a
-finite number of suitable habitats N.  Individuals die a constant
-rate e, and produce offspring at a constant rate c who then
-have a probability of colonizing an open patch that is simply
-proportional to the fraction of available patches, 1 - n/N.
-
-```{r, fig.width=7,fig.height=5}
-library(titanic)
-data("titanic_train", package = "titanic")
-titanic <- titanic_train
-ggplot(data = titanic, aes(x = Fare))+ 
-  geom_histogram()
-
-```
-
-
-Figure 1 shows the results of two exact SSA simulations of the classic patch model of Levins (1969).
-
-# Conclusions
-
-This review has explored three paradigms in how noise is viewed throughout the ecological literature, which I have dubbed respectively: noise the nuisance, noise the creator, and noise the informer.  Noise can be seen as a nuisance almost by definition: in examining the origins of noise, we have seen how stochasticity is introduced not because ecological processes are random in some fundamental sense, but rather, because those processes are influenced by a complex combination of forces we do not model explicitly.  In this view, noise captures all that additional variation that is separate from the process of interest, and a rich array of statistical methods allow us to separate the one from the other in observations and experiments.  By examining the origins of noise, we have seen that despite the complex ways in this noise can enter a model, that a Gaussian white-noise approximation (Kampen 2007; Black & McKane 2012) is often appropriate given a limit of a large system size -- a fact often invokedn implicitly but rarely derived explicitly from the theorems of Kurtz (1978) and others.\break
-
-In this context, noise does not act to create phenomena of interest directly. The sudden transitions we seek to anticipate are still explained by the deterministic part of the model -- bifurcations. But nor is noise a nuisance that merely cloaks this deterministic skeleton from plain view: rather, it becomes a novel source of information that would be inaccessible from a purely deterministic approach.  I believe more examples of how noise can inform on underlying processes is possible, but will require greater dialog between these world views.
-
-
-# Acknowledgements
-
-The author acknowledges feedback and advice from the editor,
-Tim Coulson and two anonymous reviewers. This work was supported in
-part by  USDA National Institute of Food and Agriculture, Hatch
-project CA-B-INS-0162-H.
-
-
-
-
-
-
-
+\newpage
 
 # References
 
+1. Marcus, DS, Wang, TH, Parker, J, Csernansky, JG, Morris, JC, Buckner, RL. Open Access Series of Imaging Studies (OASIS): Cross-Sectional MRI Data in Young, Middle Aged, Nondemented, and Demented Older Adults. Journal of Cognitive Neuroscience, 19, 1498-1507. doi: 10.1162/jocn.2007.19.9.1498 
+
+2. The Alzheimer's Association. 2020 Alzheimer's disease facts and figures. Alzheimer's & Dementia .2020; 16(3): p.391-460. doi: 10.1002/alz.12068.| Open in Read by QxMD 
+
+3. Kasper DL, Fauci AS, Hauser SL, Longo DL, Lameson JL, Loscalzo J. Harrison's Principles of Internal Medicine. New York, NY: McGraw-Hill Education; 2015 
+
+4. American Psychiatric Association. Diagnostic and Statistical Manual of Mental Disorders (DSM–5).2013. doi: 10.1176/appi.books.9780890425596.| Open in Read by QxMD 
+
+5. Hughes, C., Berg, L., Danziger, W., Coben, L., & Martin, R. (1982). A New Clinical Scale for the Staging of Dementia. British Journal of Psychiatry, 140(6), 566-572. doi:10.1192/bjp.140.6.56.
+
+6. Piedmont Healthcare. The Odds of Developing Alzheimer's Disease.  https://www.piedmont.org/living-better/can-you-beat-the-odds-of-developing-alzheimers-disease. Accessed March 3, 2022. 
+
+7. The true cost of patient drop-outs in clinical trials. mdgroup. https://mdgroup.com/blog/the-true-cost-of-patient-drop-outs-in-clinical-trials/. Published December 18, 2021. Accessed March 3, 2022. 
+
+
+\newpage
+
+# Table and Figures
+
+_Figure 1 - Data Source Attributes_
+
+![variable definitions](D:/UofC2022/Data621/Project/data621_final/Images/Tab1 attribute table.png)\
+
+_Figure 2 - Power calculation_
+```{r echo=FALSE}
+library(WebPower)
+alpha = 0.05
+p0=0.58
+px1=0.5
+Power=0.80
+p1=0.46
+
+wp.logistic(n=150,p0=p0,p1=p1,alpha=alpha, power = NULL,
+            alternative = c("two.sided"), family = c("Bernoulli"),
+            parameter=px1)
+```
+_Figure 3 - Sample Size calculation_
+```{r echo=FALSE}
+wp.logistic(n=NULL,p0=p0,p1=p1,alpha=alpha, power = Power,
+            alternative = c("two.sided"), family = c("Bernoulli"),
+            parameter=px1)
+```
+
+\newpage
+
+_Figure 4 - Missing values Heatmap_
+
+```{r echo=FALSE, fig.width=7,fig.height=5}
+vis_miss(dementia)
+```
+
+\newpage
+
+_Figure 5 - Methodology Flowchart_
+
+![flowchart](D:/UofC2022/Data621/Project/data621_final/Images/figure flow chart.png)\
+
+_Table 1 - Demographic and Clinical Characteristics of the Study Population:_
+```{r warning=FALSE, echo = FALSE} 
+library(gtsummary)
+dementia_descript <- subset(dementia_sub, select= -c(CDR))
+descp_tbl <-dementia_descript %>%
+  tbl_summary(
+      by = Group,
+      # sort = all_categorical()~'frequency',
+      type =list(c(nWBV)~'continuous'),
+      statistic = list(all_continuous() ~ "{mean} ({sd})",
+                       all_categorical() ~ "{n} ({p}%)"),
+      missing_text = "(Missing)"
+    ) %>%
+    add_p()%>%
+    modify_header(label = "**Variable**") %>% bold_labels()
+descp_tbl
+```
+
+\newpage
+
+_Figure 6 - Scatterplots of Logit vs Continuous Variables_
+```{r include = FALSE}
+dem_probs <- predict(dem_step,type = "response")
+predicted.classes <- ifelse(dem_probs >0.5,'Nondemented','Demented')
+
+dementia_num <- dementia_sub %>%
+  dplyr::select_if(is.numeric)%>%
+  dplyr::select(-c(CDR,ASF))
+
+predictors <- colnames(dementia_num)
+
+dementia_num <-dementia_num %>%
+  mutate(logit = log(dem_probs/(1-dem_probs)))%>%
+  gather(key="predictors",value='predictor.value',-logit)
+```
+
+```{r echo = FALSE}
+ggplot(dementia_num, aes(logit, predictor.value))+
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = "loess") + 
+  theme_bw() + 
+  facet_wrap(~predictors, scales = "free_y")
+```
+
+_Figure 7 - Boxplots of Continuous Variables_
+
+```{r include = FALSE}
+dem_boxplot <- dementia_sub %>%
+  dplyr::select(-c(CDR,ASF,SEX,SES))
+
+```
+
+```{r echo = FALSE, fig.width=7,fig.height=4}
+age_box <- ggplot(data = dem_boxplot[,c("Group",'Age')],aes(x=Group, y=Age))+
+  geom_boxplot(aes(fill=Group),show.legend=FALSE)+
+  xlab("")
+
+educ_box <- ggplot(data = dem_boxplot[,c("Group",'EDUC')],aes(x=Group, y=EDUC))+
+  geom_boxplot(aes(fill=Group),show.legend=FALSE)+
+  xlab("")
+
+mmse_box <- ggplot(data = dem_boxplot[,c("Group",'MMSE')],aes(x=Group, y=MMSE))+
+  geom_boxplot(aes(fill=Group),show.legend=FALSE)+
+  xlab("")
+
+eTIV_box <- ggplot(data = dem_boxplot[,c("Group",'eTIV')],aes(x=Group, y=eTIV))+
+  geom_boxplot(aes(fill=Group),show.legend=FALSE)+
+  xlab("")
+
+nWBV_box <- ggplot(data = dem_boxplot[,c("Group",'nWBV')],aes(x=Group, y=nWBV))+
+  geom_boxplot(aes(fill=Group),show.legend=FALSE)+
+  xlab("")
+
+gridExtra::grid.arrange(age_box,educ_box,mmse_box,eTIV_box,nWBV_box,nrow=2,ncol=3)
+```
+
+_Figure 8 - Cook's Distance:_
+
+```{r echo=FALSE, fig.width=7,fig.height=5}
+plot(dem_step,pch=18,col='red',which=c(4))
+```
+
+_Table 3 Primary Outcomes with Effect Modiciation of Dementia and Socioeconomic Status_
+```{r warning=FALSE, message =FALSE, echo = FALSE}
+inter_tbl <- inter %>%
+  tbl_regression(exponentiate = TRUE) %>%
+  add_global_p()%>%
+  bold_p()%>%
+  add_vif()%>%
+  modify_table_styling(
+    columns = c(estimate, ci),
+    rows = reference_row %in% TRUE,
+    missing_symbol = "1.00"
+  ) %>%
+  modify_header(label = "**Variable**") %>% bold_labels()
+inter_tbl
+
+# 
+# descp_tbl %>%    # build gtsummary table
+#   as_gt() %>%             # convert to gt table
+#   gt::gtsave(             # save table as image
+#     filename = "demo2.png", path='D:/UofC2022/Data621',
+#   )
+```
+
+\newpage 
+
+_Figure 9 - Ratio of CDR overtime_
+
+![CDR graph](D:/UofC2022/Data621/Project/data621_final/Images/CDR.png)\
+
+
+_Figure 10 - Health Access Disparity_
+
+![Health Access](D:/UofC2022/Data621/Project/data621_final/Images/health.png)\
 
 
 
 
-# Figure 1: Population dynamics from a Gillespie simulation of the Levins model with large (N=1000, panel A) and small (N=100, panel B) number of sites (blue) show relatively weaker effects of demographic noise in the bigger system. Models are otherwise identical, with e = 0.2 and c = 1 (code in appendix A). Theoretical predictions for mean and plus/minus one standard deviation shown in horizontal re dashed lines.
+
+
